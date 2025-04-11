@@ -12,6 +12,7 @@ import QuestionsView from "@/views/question/QuestionsView.vue";
 import QuestionSubmitView from "@/views/question/QuestionSubmitView.vue";
 import ViewQuestionView from "@/views/question/ViewQuestionView.vue";
 import ImageListView from "@/views/image/ImageListView.vue";
+import ContainerListView from "@/views/container/ContainerListView.vue";
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -83,6 +84,11 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/imageList",
     name: "镜像",
     component: ImageListView,
+  },
+  {
+    path: "/containerList",
+    name: "我的容器",
+    component: ContainerListView,
   },
   {
     path: "/",

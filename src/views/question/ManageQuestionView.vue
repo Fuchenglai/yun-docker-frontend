@@ -145,6 +145,7 @@ const router = useRouter();
 const doUpdate = (question: Question) => {
   router.push({
     path: "/update/question",
+    // 这里使用 query 传递id参数
     query: {
       id: question.id,
     },

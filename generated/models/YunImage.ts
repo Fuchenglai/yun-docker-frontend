@@ -10,6 +10,7 @@ export type YunImage = {
     imageSize?: number;
     imageType?: number;
     isDelete?: number;
+    port?: number;
     repository?: string;
     tag?: string;
     updateIme?: string;

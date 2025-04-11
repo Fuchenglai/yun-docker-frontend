@@ -9,6 +9,7 @@ export type ContainerVO = {
     containerName?: string;
     createTime?: string;
     image?: string;
+    ip?: string;
     ports?: string;
     status?: string;
 };
