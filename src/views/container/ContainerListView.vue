@@ -13,6 +13,9 @@
         @page-change="onPageChange"
     >
       <!--      自定义列渲染 插槽-->
+      <template #statusSlot="{ record }">
+        {{ record.status === 'running' ? '运行中' : '已停止' }}
+      </template>
       <template #createTimeSlot="{ record }">
         {{ formatDateToHour(record.createTime) }}
       </template>
@@ -21,27 +24,27 @@
       </template>
       <template #optional="{ record }">
         <a-space>
-          <a-button type="primary" @click="handleClick(record)"> 运行详情</a-button>
+          <a-button type="primary" @click="handleClick(record)" :disabled="record.status === 'exited'"> 运行详情
+          </a-button>
 
-<!--          <a-modal v-model:visible="visible" title="运行容器" @cancel="handleCancel" @before-ok="handleBeforeOk">
-            <a-form :model="runCtrForm"
-                    auto-label-width
-                    label-align="left"
-                    style="max-width: 420px; margin: 0 auto">
-              <a-form-item field="" label="容器端口">
-                <a-input v-model="runCtrForm.containerPort"/>
-              </a-form-item>
-              <a-form-item field="name" label="宿主机端口">
-                <a-input v-model="runCtrForm.hostPort"/>
-              </a-form-item>
-              <a-form-item field="imageId" label="镜像id">
-                <a-input v-model="runCtrForm.imageId" disabled/>
-              </a-form-item>
-              <a-form-item field="name" label="别名">
-                <a-input v-model="runCtrForm.name"/>
-              </a-form-item>
-            </a-form>
-          </a-modal>-->
+          <a-modal v-model:visible="visible" title="运行详情" @cancel="handleCancel" @before-ok="handleCancel">
+            <div>
+              <p>CPU总使用时间(秒): {{ containerStats.cpuTotalUsage }}</p>
+              <p>每个CPU使用率:
+                <ul>
+                  <li v-for="usage in containerStats.perCpuUsage" :key="usage">{{ usage }}</li>
+                </ul>
+              </p>
+              <p>在线CPU数量: {{ containerStats.onlineCpus }}</p>
+              <p>当前占用内存(KB): {{ containerStats.memoryUsage }}</p>
+              <p>最大占用内存(KB): {{ containerStats.memoryMaxUsage }}</p>
+              <p>内存使用限制(MB): {{ containerStats.memoryLimit }}</p>
+              <p>当前运行进程数: {{ containerStats.numProcess }}</p>
+              <p>网络入站流量(KB): {{ containerStats.rxBytes }}</p>
+              <p>网络出站流量(KB): {{ containerStats.txBytes }}</p>
+              <p>磁盘IO传输数据量(KB): {{ containerStats.ioValue }}</p>
+            </div>
+          </a-modal>
 
           <a-button type="primary" @click="doRestart(record)">重启</a-button>
           <a-button type="primary" @click="doStart(record)">启动</a-button>
@@ -56,41 +59,90 @@
 
 <script setup lang="ts">
 import {onMounted, ref, watchEffect} from "vue";
-import {
-  ImageControllerService, Page_YunImage_, UserLoginRequest, YunImage,
-  ContainerControllerService, CtrRunRequest, ContainerVO,
-
-
-} from "../../../generated";
+import {ContainerControllerService, CtrRunRequest, ContainerVO,} from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import * as querystring from "querystring";
 import {useRouter} from "vue-router";
 import {reactive} from "vue";
+import {useStore} from "vuex";
 
+const store = useStore();
 const visible = ref(false);
 
-/*const runCtrForm = reactive({
-  containerPort: 0,
-  hostPort: 0,
-  imageId: "",
-  name: "",
-} as CtrRunRequest);*/
+// 定义响应式变量存储后端数据
+const containerStats = reactive({
+  cpuTotalUsage: 0,
+  perCpuUsage: [],
+  onlineCpus: 0,
+  memoryUsage: 0,
+  memoryMaxUsage: 0,
+  memoryLimit: 0,
+  numProcess: 0,
+  rxBytes: 0,
+  txBytes: 0,
+  ioValue: 0,
+});
 
-const handleClick = (record:ContainerVO) => {
+const userId = store.state.user?.loginUser?.id ?? 0;
+let socket: WebSocket | null = null; // 用于存储实例化后websocket
+
+const handleClick = (record: ContainerVO) => {
+  // 如果已存在WebSocket连接，先关闭
+  if (socket !== null) {
+    socket.close();
+  }
+
+  // 创建新的WebSocket连接
+  socket = new WebSocket('ws://localhost:8088/api/webSocket/' + userId);
+
+  // 连接打开时的处理
+  socket.onopen = () => {
+    console.log('WebSocket连接已建立');
+    // 可以发送消息给后端请求特定容器的数据
+    socket.send(JSON.stringify({
+      userId: userId,
+      ctrId: record.containerId
+    }));
+  };
+
+  // 接收到消息时的处理
+  socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    // 更新响应式变量
+    containerStats.cpuTotalUsage = data.cpuTotalUsage;
+    containerStats.perCpuUsage = data.perCpuUsage;
+    containerStats.onlineCpus = data.onlineCpus;
+    containerStats.memoryUsage = data.memoryUsage;
+    containerStats.memoryMaxUsage = data.memoryMaxUsage;
+    containerStats.memoryLimit = data.memoryLimit;
+    containerStats.numProcess = data.numProcess;
+    containerStats.rxBytes = data.rxBytes;
+    containerStats.txBytes = data.txBytes;
+    containerStats.ioValue = data.ioValue;
+  };
+
+  // 连接关闭时的处理
+  socket.onclose = () => {
+    console.log('WebSocket连接已关闭');
+  };
+
+  // 连接错误时的处理
+  socket.onerror = (error) => {
+    console.error('WebSocket连接错误', error);
+  };
   visible.value = true;
-  //runCtrForm.imageId = record.imageId;
-};
 
-const handleBeforeOk = (done) => {
-  window.setTimeout(() => {
-
-  }, 3000)
 };
 
 const handleCancel = () => {
+  console.log("客户端主动断开socket");
   visible.value = false;
+  // 关闭WebSocket连接
+  if (socket) {
+    socket.close();
+  }
 }
-
 
 /**
  * 表单信息
@@ -163,7 +215,6 @@ const formatDateToHour = (dateString: string): string => {
   }
 };*/
 
-
 const columns = [
   {
     title: "容器id",
@@ -187,7 +238,7 @@ const columns = [
   },
   {
     title: "状态",
-    dataIndex: "status",
+    slotName: "statusSlot",
   },
   {
     title: "创建时间",
@@ -246,8 +297,6 @@ const doStop = async (containerVO: ContainerVO) => {
   }
 };
 
-
-
 const router = useRouter();
 
 /*const doRunCtr = async () => {
@@ -259,7 +308,6 @@ const router = useRouter();
     message.error("运行失败" + res.message);
   }
 };*/
-
 
 /*const doUpdate = (yunImage: YunImage) => {
   router.push({

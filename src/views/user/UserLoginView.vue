@@ -18,9 +18,16 @@
         />
       </a-form-item>
       <a-form-item>
-        <a-button html-type="submit" style="width: 120px" type="primary">
-          登录
-        </a-button>
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+          <!-- 登录按钮 -->
+          <a-button html-type="submit" style="width: 120px" type="primary">
+            登录
+          </a-button>
+          <!-- 注册按钮，与登录按钮同一水平线 -->
+          <a-button @click="handleRegister" style="width: 120px">
+            注册
+          </a-button>
+        </div>
       </a-form-item>
     </a-form>
   </div>
@@ -60,5 +67,14 @@ const handleSubmit = async () => {
   } else {
     message.error("登陆失败，" + res.message);
   }
+};
+
+/**
+ * 处理注册按钮点击事件
+ */
+const handleRegister = () => {
+  router.push({
+    path: "/user/register", // 假设路由名称为 UserRegisterView
+  });
 };
 </script>

@@ -5,6 +5,7 @@ import UserLoginView from "@/views/user/UserLoginView.vue";
 import UserRegisterView from "@/views/user/UserRegisterView.vue";
 import AdminView from "@/views/AdminView.vue";
 import NoAuthView from "@/views/NoAuthView.vue";
+import NetworkErrorView from "@/views/NetworkErrorView.vue";
 import ACCESS_ENUM from "@/access/accessEnum";
 import AddQuestionView from "@/views/question/AddQuestionView.vue";
 import ManageQuestionView from "@/views/question/ManageQuestionView.vue";
@@ -35,7 +36,7 @@ export const routes: Array<RouteRecordRaw> = [
       hideInMenu: true,
     },
   },
-  {
+  /*{
     path: "/questions",
     name: "浏览题目",
     component: QuestionsView,
@@ -54,8 +55,8 @@ export const routes: Array<RouteRecordRaw> = [
       access: ACCESS_ENUM.USER,
       hideInMenu: true,
     },
-  },
-  {
+  },*/
+/*  {
     path: "/add/question",
     name: "创建题目",
     component: AddQuestionView,
@@ -71,20 +72,8 @@ export const routes: Array<RouteRecordRaw> = [
       access: ACCESS_ENUM.USER,
       hideInMenu: true,
     },
-  },
-  {
-    path: "/manage/question/",
-    name: "管理题目",
-    component: ManageQuestionView,
-    /*meta: {
-      access: ACCESS_ENUM.ADMIN,
-    },*/
-  },
-  {
-    path: "/imageList",
-    name: "镜像",
-    component: ImageListView,
-  },
+  },*/
+
   {
     path: "/containerList",
     name: "我的容器",
@@ -92,8 +81,8 @@ export const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/",
-    name: "主页",
-    component: QuestionsView,
+    name: "镜像",
+    component: ImageListView,
   },
   // {
   //   path: "/hide",

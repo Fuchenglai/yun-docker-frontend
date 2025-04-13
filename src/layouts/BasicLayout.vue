@@ -2,15 +2,19 @@
   <div id="basicLayout">
     <a-layout style="min-height: 100vh">
       <a-layout-header class="header">
-        <GlobalHeader />
+        <GlobalHeader/>
       </a-layout-header>
       <a-layout-content class="content">
-        <router-view />
+        <router-view/>
       </a-layout-content>
       <a-layout-footer class="footer">
-        <a href="https://yupi.icu" target="_blank">
-          编程导航知识星球 by 程序员鱼皮
-        </a>
+        <div class="footer-content">
+          <a href="https://fuchenglai.github.io/" target="_blank">
+            云Docker by 程序员赖富城
+          </a>
+          <span>电话: 193-0303-2510</span>
+          <span>邮箱: fucheng_lai@163.com</span>
+        </div>
       </a-layout-footer>
     </a-layout>
   </div>
@@ -40,11 +44,22 @@
   right: 0;
   text-align: center;
 }
+
+#basicLayout .footer .footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+#basicLayout .footer span {
+  color: #666;
+}
 </style>
 <script>
 import GlobalHeader from "@/components/GlobalHeader";
 
 export default {
-  components: { GlobalHeader },
+  components: {GlobalHeader},
 };
 </script>

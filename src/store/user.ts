@@ -8,6 +8,8 @@ export default {
   state: () => ({
     loginUser: {
       userName: "未登录",
+      id: 0,
+      balance: 0
     },
   }),
   actions: {
