@@ -2,30 +2,30 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { BaseResponse_object_ } from '../models/BaseResponse_object_';
-import type { BaseResponse_Page_ContainerVO_ } from '../models/BaseResponse_Page_ContainerVO_';
-import type { BaseResponse_string_ } from '../models/BaseResponse_string_';
-import type { CtrRunRequest } from '../models/CtrRunRequest';
-import type { PageRequest } from '../models/PageRequest';
+import type {BaseResponse_object_} from '../models/BaseResponse_object_';
+import type {BaseResponse_Page_ContainerVO_} from '../models/BaseResponse_Page_ContainerVO_';
+import type {BaseResponse_string_} from '../models/BaseResponse_string_';
+import type {CtrRunRequest} from '../models/CtrRunRequest';
+import type {PageRequest} from '../models/PageRequest';
 
-import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type {CancelablePromise} from '../core/CancelablePromise';
+import {OpenAPI} from '../core/OpenAPI';
+import {request as __request} from '../core/request';
 
 export class ContainerControllerService {
 
     /**
-     * closeStats
+     * logCtr
      * @param containerId containerId
-     * @returns BaseResponse_object_ OK
+     * @returns any OK
      * @throws ApiError
      */
-    public static closeStatsUsingGet(
-containerId: string,
-): CancelablePromise<BaseResponse_object_> {
+    public static logCtrUsingGet(
+        containerId: string,
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/container/closeStats',
+            url: '/api/container/downloadLog',
             query: {
                 'containerId': containerId,
             },
@@ -45,35 +45,12 @@ containerId: string,
      * @throws ApiError
      */
     public static listContainerByPageUsingPost(
-pageRequest: PageRequest,
-): CancelablePromise<BaseResponse_Page_ContainerVO_ | any> {
+        pageRequest: PageRequest,
+    ): CancelablePromise<BaseResponse_Page_ContainerVO_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/container/list/page',
             body: pageRequest,
-            errors: {
-                401: `Unauthorized`,
-                403: `Forbidden`,
-                404: `Not Found`,
-            },
-        });
-    }
-
-    /**
-     * readStats
-     * @param containerId containerId
-     * @returns BaseResponse_object_ OK
-     * @throws ApiError
-     */
-    public static readStatsUsingGet(
-containerId: string,
-): CancelablePromise<BaseResponse_object_> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/container/readStats',
-            query: {
-                'containerId': containerId,
-            },
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,
@@ -89,8 +66,8 @@ containerId: string,
      * @throws ApiError
      */
     public static removeUsingGet(
-containerId: string,
-): CancelablePromise<BaseResponse_string_> {
+        containerId: string,
+    ): CancelablePromise<BaseResponse_string_> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/container/remove',
@@ -112,8 +89,8 @@ containerId: string,
      * @throws ApiError
      */
     public static restartUsingGet(
-containerId: string,
-): CancelablePromise<BaseResponse_string_> {
+        containerId: string,
+    ): CancelablePromise<BaseResponse_string_> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/container/restart',
@@ -136,8 +113,8 @@ containerId: string,
      * @throws ApiError
      */
     public static runUsingPost(
-ctrRunRequest: CtrRunRequest,
-): CancelablePromise<BaseResponse_object_ | any> {
+        ctrRunRequest: CtrRunRequest,
+    ): CancelablePromise<BaseResponse_object_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/container/run',
@@ -157,8 +134,8 @@ ctrRunRequest: CtrRunRequest,
      * @throws ApiError
      */
     public static startOrStopUsingGet(
-containerId: string,
-): CancelablePromise<BaseResponse_string_> {
+        containerId: string,
+    ): CancelablePromise<BaseResponse_string_> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/container/startOrStop',

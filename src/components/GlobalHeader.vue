@@ -27,11 +27,11 @@
           <IconUser/>
         </a-avatar>
         <div class="user-name">
-          <a-popover title="用户详情">
-            {{ store.state.user?.loginUser?.userName ?? "未登录" }}
+          <a-popover title="用户详情" position="lt">
+            <span>{{ store.state.user?.loginUser?.userName ?? "未登录" }}</span>
             <template #content>
-              <p>昵称：{{ store.state.user?.loginUser?.userName ?? 0 }}<p/>
-                <p>余额：{{ store.state.user?.loginUser?.balance ?? 0 }}<p/>
+              <p>昵称：{{ store.state.user?.loginUser?.userName ?? 0 }}</p>
+                <p>余额：{{ store.state.user?.loginUser?.balance ?? 0 }}</p>
             </template>
           </a-popover>
 
@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import {routes} from "../router/routes";
-import {useRoute, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import {computed, ref} from "vue";
 import {useStore} from "vuex";
 import checkAccess from "@/access/checkAccess";

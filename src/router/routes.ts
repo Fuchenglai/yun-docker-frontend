@@ -1,19 +1,11 @@
-import { RouteRecordRaw } from "vue-router";
-import HomeView from "@/views/ExampleView.vue";
+import {RouteRecordRaw} from "vue-router";
 import UserLayout from "@/layouts/UserLayout.vue";
 import UserLoginView from "@/views/user/UserLoginView.vue";
 import UserRegisterView from "@/views/user/UserRegisterView.vue";
-import AdminView from "@/views/AdminView.vue";
 import NoAuthView from "@/views/NoAuthView.vue";
-import NetworkErrorView from "@/views/NetworkErrorView.vue";
-import ACCESS_ENUM from "@/access/accessEnum";
-import AddQuestionView from "@/views/question/AddQuestionView.vue";
-import ManageQuestionView from "@/views/question/ManageQuestionView.vue";
-import QuestionsView from "@/views/question/QuestionsView.vue";
-import QuestionSubmitView from "@/views/question/QuestionSubmitView.vue";
-import ViewQuestionView from "@/views/question/ViewQuestionView.vue";
 import ImageListView from "@/views/image/ImageListView.vue";
 import ContainerListView from "@/views/container/ContainerListView.vue";
+import AboutView from "@/views/AboutView.vue";
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -74,15 +66,21 @@ export const routes: Array<RouteRecordRaw> = [
     },
   },*/
 
+
+  {
+    path: "/",
+    name: "镜像",
+    component: ImageListView,
+  },
   {
     path: "/containerList",
     name: "我的容器",
     component: ContainerListView,
   },
   {
-    path: "/",
-    name: "镜像",
-    component: ImageListView,
+    path: "/about",
+    name: "启动容器示例",
+    component: AboutView,
   },
   // {
   //   path: "/hide",

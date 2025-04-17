@@ -63,7 +63,7 @@
                 <a-form-item field="imageId" label="镜像id">
                   <a-input v-model="runCtrForm.imageId" disabled/>
                 </a-form-item>
-                <a-form-item field="name" label="别名">
+                <a-form-item tooltip="不填写则系统随机生成别名" field="name" label="别名">
                   <a-input v-model="runCtrForm.name"/>
                 </a-form-item>
                 <!--                <a-form-item>
@@ -84,17 +84,10 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, watchEffect} from "vue";
-import {
-  ImageControllerService, Page_YunImage_, UserLoginRequest, YunImage,
-  ContainerControllerService, CtrRunRequest,
-
-
-} from "../../../generated";
+import {onMounted, reactive, ref, watchEffect} from "vue";
+import {ContainerControllerService, CtrRunRequest, ImageControllerService, YunImage,} from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
-import * as querystring from "querystring";
 import {useRouter} from "vue-router";
-import {reactive} from "vue";
 
 const visible = ref(false);
 

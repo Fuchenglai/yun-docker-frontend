@@ -48,6 +48,7 @@
 
           <a-button type="primary" @click="doRestart(record)">重启</a-button>
           <a-button type="primary" @click="doStart(record)">启动</a-button>
+          <a-button type="primary" @click="downloadLog(record)">查看日志</a-button>
           <a-button status="warning" @click="doStop(record)">停止</a-button>
           <a-button status="danger" @click="doDelete(record)">删除</a-button>
 
@@ -58,13 +59,12 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref, watchEffect} from "vue";
-import {ContainerControllerService, CtrRunRequest, ContainerVO,} from "../../../generated";
+import {onMounted, reactive, ref, watchEffect} from "vue";
+import {ContainerControllerService, ContainerVO,} from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
-import * as querystring from "querystring";
 import {useRouter} from "vue-router";
-import {reactive} from "vue";
 import {useStore} from "vuex";
+import axios from "axios";
 
 const store = useStore();
 const visible = ref(false);
@@ -295,6 +295,32 @@ const doStop = async (containerVO: ContainerVO) => {
   } else {
     message.error("停止容器失败" + res.message);
   }
+};
+
+const downloadLog = async (containerVO: ContainerVO) => {
+
+  // 发送Ajax请求获取文件二进制数据
+    axios({
+      url: '/api/container/downloadLog',
+      method: 'GET',
+      responseType: 'blob',
+      params: { containerId: containerVO.containerId } // 修改为对象形式传递参数
+    }).then((response) => {
+      console.log('!!!---res',response)
+      // 此处返回的blob对象，response已经是Blob类型，无需再包装成Blob
+      var fileURL = window.URL.createObjectURL(response.data); // 修改为直接使用response
+      console.log(fileURL, 'fileURL');
+      var fileName = 'log.txt'; // 假设日志文件名称为log.txt，这里需要定义fileName变量
+      var fileLink = document.createElement('a');
+      fileLink.href = fileURL;
+      fileLink.setAttribute('download', fileName);
+      document.body.appendChild(fileLink);
+      fileLink.click();
+      document.body.removeChild(fileLink); // 下载完成后移除元素
+      window.URL.revokeObjectURL(fileURL); // 释放URL对象
+    }).catch(error => {
+      console.error('下载日志失败:', error);
+    });
 };
 
 const router = useRouter();
