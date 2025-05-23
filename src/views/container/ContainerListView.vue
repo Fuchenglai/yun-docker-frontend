@@ -64,7 +64,6 @@ import {ContainerControllerService, ContainerVO,} from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
-import axios from "axios";
 
 const store = useStore();
 const visible = ref(false);
@@ -298,29 +297,38 @@ const doStop = async (containerVO: ContainerVO) => {
 };
 
 const downloadLog = async (containerVO: ContainerVO) => {
+  try {
+    const res = await ContainerControllerService.logCtrUsingGet(containerVO.containerId as string);
 
-  // 发送Ajax请求获取文件二进制数据
-    axios({
-      url: '/api/container/downloadLog',
-      method: 'GET',
-      responseType: 'blob',
-      params: { containerId: containerVO.containerId } // 修改为对象形式传递参数
-    }).then((response) => {
-      console.log('!!!---res',response)
-      // 此处返回的blob对象，response已经是Blob类型，无需再包装成Blob
-      var fileURL = window.URL.createObjectURL(response.data); // 修改为直接使用response
-      console.log(fileURL, 'fileURL');
-      var fileName = 'log.txt'; // 假设日志文件名称为log.txt，这里需要定义fileName变量
-      var fileLink = document.createElement('a');
-      fileLink.href = fileURL;
-      fileLink.setAttribute('download', fileName);
-      document.body.appendChild(fileLink);
-      fileLink.click();
-      document.body.removeChild(fileLink); // 下载完成后移除元素
+    // 创建Blob对象，指定内容类型为纯文本
+    const blob = new Blob([res], { type: 'text/plain' });
+
+    // 创建一个临时URL
+    const fileURL = window.URL.createObjectURL(blob);
+
+    // 生成文件名（使用容器ID的前12位作为文件名的一部分）
+    const fileName = `container_${containerVO.containerId.slice(0, 12)}_log.txt`;
+
+    // 创建一个a标签用于下载
+    const fileLink = document.createElement('a');
+    fileLink.href = fileURL;
+    fileLink.setAttribute('download', fileName);
+
+    // 将链接添加到文档中并模拟点击
+    document.body.appendChild(fileLink);
+    fileLink.click();
+
+    // 下载完成后清理
+    setTimeout(() => {
+      document.body.removeChild(fileLink);
       window.URL.revokeObjectURL(fileURL); // 释放URL对象
-    }).catch(error => {
-      console.error('下载日志失败:', error);
-    });
+    }, 100);
+
+    message.success("日志文件下载成功");
+  } catch (error) {
+    message.error("下载日志失败：" + (error as Error).message);
+    console.error('下载日志失败:', error);
+  }
 };
 
 const router = useRouter();

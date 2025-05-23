@@ -114,6 +114,7 @@ const handleCancel = () => {
   visible.value = false;
 }
 
+const router = useRouter();
 
 /**
  * 表单信息
@@ -143,8 +144,9 @@ const loadData = async () => {
   if (res.code === 0) {
     dataList.value = res.data.records;
     total.value = res.data.total;
-  } else {
-    message.error("加载失败，" + res.message);
+  } else if (res.message === "未登录") {
+    message.error("未登录，请先登录！");
+    router.push("/user/login");
   }
 };
 
@@ -241,7 +243,6 @@ const doDelete = async (yunImage: YunImage) => {
   }
 };
 
-const router = useRouter();
 
 const doRunCtr = async () => {
   const res = await ContainerControllerService.runUsingPost(runCtrForm);

@@ -10,13 +10,14 @@ module.exports = defineConfig({
     },
     //配置跨域
     devServer: {
-        port: 8080,
+        port: 3000,
         proxy: {
             '/api': {
                 target: 'http://localhost:8088',
                 ws: false,
                 changeOrigin: true
             },
-        }
+        },
+        allowedHosts: "all"
     }
 });
