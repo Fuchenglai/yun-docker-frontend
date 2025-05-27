@@ -10,6 +10,7 @@ import type {PageRequest} from '../models/PageRequest';
 import type {CancelablePromise} from '../core/CancelablePromise';
 import {OpenAPI} from '../core/OpenAPI';
 import {request as __request} from '../core/request';
+import {BaseResponse_string_} from "../models/BaseResponse_string_";
 
 export class OrderControllerService {
 
@@ -73,6 +74,23 @@ pageRequest: PageRequest,
             method: 'POST',
             url: '/api/order/list/page',
             body: pageRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
+    public static cancelOrderUsingGet(
+        orderId: string,
+    ): CancelablePromise<BaseResponse_string_> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/order/cancel',
+            query: {
+                'orderId': orderId,
+            },
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,

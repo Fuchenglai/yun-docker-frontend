@@ -1,6 +1,6 @@
 <template>
   <div id="imageForm" class="form-container">
-    <p class="balance-text">您当前的积分余额是：<span class="balance-value">{{ balance }}</span></p>
+    <p class="balance-text">创建容器会消耗积分，您当前的积分余额是：<span class="balance-value">{{ balance }}</span></p>
 
     <a-form
         :model="form"
@@ -207,12 +207,16 @@ const formatDateToHour = (dateString: string): string => {
  */
 const handleSubmit = async () => {
   const res = await OrderControllerService.addOrderUsingGet(form.rechargeCredit);
-  if (res.code === 0) {
+  if (res.code === 0 && res.data) {
     message.success("订单创建成功");
-
-    // todo
-
-    loadData();
+    router.push({
+      path: '/order/payment',
+      query: {
+        orderId: res.data,
+        credit: form.rechargeCredit,
+        amount: calculateMoney.value
+      }
+    });
   } else {
     message.error("订单创建失败");
   }

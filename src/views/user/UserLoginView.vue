@@ -24,7 +24,7 @@
             登录
           </a-button>
           <!-- 注册按钮，与登录按钮同一水平线 -->
-          <a-button @click="handleRegister" style="width: 120px">
+          <a-button @click="handleRegister" style="width: 120px" type="primary">
             注册
           </a-button>
         </div>
@@ -34,11 +34,11 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from "vue";
-import { UserControllerService, UserLoginRequest } from "../../../generated";
+import {reactive} from "vue";
+import {UserControllerService, UserLoginRequest} from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
+import {useRouter} from "vue-router";
+import {useStore} from "vuex";
 
 /**
  * 表单信息

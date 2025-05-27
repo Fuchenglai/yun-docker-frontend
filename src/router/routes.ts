@@ -88,6 +88,14 @@ export const routes: Array<RouteRecordRaw> = [
         name: "积分充值",
         component: OrderListView,
     },
+    {
+        path: "/order/payment",
+        name: "订单支付",
+        component: () => import("@/views/order/PaymentView.vue"),
+        meta: {
+            hideInMenu: true,
+        },
+    },
     // {
     //   path: "/hide",
     //   name: "隐藏页面",
