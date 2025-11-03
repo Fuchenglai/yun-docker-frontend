@@ -14,7 +14,13 @@
     >
       <!--      自定义列渲染 插槽-->
       <template #statusSlot="{ record }">
-        {{ record.status === 'running' ? '运行中' : '已停止' }}
+        <a-tag :color="record.status === 'running' ? 'green' : 'red'" bordered>
+          <template #icon>
+            <icon-check-circle-fill v-if="record.status === 'running'"/>
+            <icon-close-circle-fill v-else/>
+          </template>
+          {{ record.status === 'running' ? '运行中' : '已停止' }}
+        </a-tag>
       </template>
       <template #createTimeSlot="{ record }">
         {{ formatDateToHour(record.createTime) }}
@@ -46,11 +52,25 @@
             </div>
           </a-modal>
 
-          <a-button type="primary" @click="doRestart(record)">重启</a-button>
-          <a-button type="primary" @click="doStart(record)">启动</a-button>
-          <a-button type="primary" @click="downloadLog(record)">查看日志</a-button>
-          <a-button status="warning" @click="doStop(record)">停止</a-button>
-          <a-button status="danger" @click="doDelete(record)">删除</a-button>
+          <a-button type="primary" @click="doRestart(record)" title="重启">
+            <template #icon><icon-refresh /></template>
+          </a-button>
+          <a-button
+            :type="record.status === 'running' ? 'warning' : 'primary'"
+            @click="record.status === 'running' ? doStop(record) : doStart(record)"
+            :title="record.status === 'running' ? '停止' : '启动'"
+          >
+            <template #icon>
+              <icon-pause v-if="record.status === 'running'"/>
+              <icon-play-arrow v-else/>
+            </template>
+          </a-button>
+          <a-button type="primary" @click="downloadLog(record)" title="查看日志">
+            <template #icon><icon-file /></template>
+          </a-button>
+          <a-button status="danger" @click="doDelete(record)" title="删除">
+            <template #icon><icon-delete /></template>
+          </a-button>
 
         </a-space>
       </template>
@@ -61,6 +81,13 @@
 <script setup lang="ts">
 import {onMounted, reactive, ref, watchEffect} from "vue";
 import {ContainerControllerService, ContainerVO,} from "../../../generated";
+import {
+  IconRefresh,
+  IconPlayArrow,
+  IconFile,
+  IconPause,
+  IconDelete
+} from '@arco-design/web-vue/es/icon';
 import message from "@arco-design/web-vue/es/message";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
@@ -91,7 +118,7 @@ const handleClick = (record: ContainerVO) => {
     socket.close();
   }
 
-  // 创建新的WebSocket连接
+  // 创建新的WebSocket连接，url填后端服务地址
   socket = new WebSocket('ws://localhost:8088/api/webSocket/' + userId);
 
   // 连接打开时的处理

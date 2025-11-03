@@ -35,6 +35,9 @@
         <div>登录密码：111111</div>
         <div>支付密码：111111</div>
       </a-alert>
+      <a-alert type="info" class="payment-alert">
+        支付宝沙箱支付小概率网络不稳定，再次尝试即可
+      </a-alert>
     </div>
 
     <div class="action-buttons">

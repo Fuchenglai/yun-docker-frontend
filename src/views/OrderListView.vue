@@ -60,7 +60,7 @@
             </div>
           </a-modal>
 
-          <!--          <a-button status="danger" @click="doDelete(record)" :disabled="record.imageType === 0">删除</a-button>-->
+          <a-button status="primary" @click="toPay(record)" :disabled="record.frontStatus !== '待支付'">去支付</a-button>
         </a-space>
       </template>
     </a-table>
@@ -108,6 +108,17 @@ const handleClick = async (record) => {
     orderDetail.finishedTime = res.data.finishedTime ?? "";
     orderDetail.cancelTime = res.data.cancelTime ?? "";
   }
+}
+
+const toPay = (record) => {
+  router.push({
+    path: '/order/payment',
+    query: {
+      orderId: record.orderId,
+      credit: record.credit,
+      amount: record.money
+    }
+  });
 }
 
 const handleCancel = () => {
