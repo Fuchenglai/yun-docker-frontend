@@ -11,7 +11,7 @@
                    tooltip="输入repository:tag，如果只输入repository，那么tag默认为latest" label="镜像">
         <a-input v-model="form.image" placeholder="请输入镜像"/>
 
-        <a-button html-type="submit" style="width: 120px;margin-left: 10px" type="primary">
+        <a-button html-type="submit" style="width: 120px;margin-left: 10px" type="primary" :loading="loading">
           拉取
         </a-button>
       </a-form-item>
@@ -90,6 +90,8 @@ import message from "@arco-design/web-vue/es/message";
 import {useRouter} from "vue-router";
 
 const visible = ref(false);
+
+const loading = ref(false);
 
 const runCtrForm = reactive({
   containerPort: 0,
@@ -179,12 +181,17 @@ const formatDateToHour = (dateString: string): string => {
  * @param data
  */
 const handleSubmit = async () => {
-  const res = await ImageControllerService.pullUsingGet(form.image);
-  if (res.code === 0) {
-    message.success("拉取镜像成功");
-    loadData();
-  } else {
-    message.error("拉取镜像失败");
+  try {
+    loading.value = true;
+    const res = await ImageControllerService.pullUsingGet(form.image);
+    if (res.code === 0) {
+      message.success("拉取镜像成功");
+      loadData();
+    } else {
+      message.error("拉取镜像失败");
+    }
+  } finally {
+    loading.value = false;
   }
 };
 
