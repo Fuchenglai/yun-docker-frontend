@@ -41,6 +41,12 @@
         {{ formatDateToHour(record.finishedTime) }}
       </template>
 
+      <template #statusSlot="{ record }">
+        <a-tag :color="getStatusColor(record.frontStatus)" checkable>
+          {{ record.frontStatus }}
+        </a-tag>
+      </template>
+
       <template #optional="{ record }">
         <a-space>
 
@@ -213,6 +219,21 @@ const formatDateToHour = (dateString: string): string => {
 };
 
 /**
+ * 根据订单状态返回对应的颜色
+ * @param status 订单状态
+ */
+const getStatusColor = (status: string): string => {
+  const colorMap: Record<string, string> = {
+    '待支付': 'orange',      // 待支付 - 橙色
+    '支付成功': 'green',       // 已完成 - 绿色
+    '已取消': 'red',         // 已取消 - 红色
+    '支付失败': 'gray',        // 已超时 - 灰色
+    '已关闭': 'default',     // 已关闭 - 默认色
+  };
+  return colorMap[status] || 'default';
+};
+
+/**
  * 提交表单
  * @param data
  */
@@ -249,7 +270,7 @@ const columns = [
   },
   {
     title: "订单状态",
-    dataIndex: "frontStatus",
+    slotName: "statusSlot",
   },
   {
     title: "创建时间",
